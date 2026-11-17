@@ -1,9 +1,10 @@
 // GENERATED foundation scaffold — do not edit by hand.
 // Configurable site header. All content and design comes from props (see SiteHeaderProps).
 // Business-specific values live in src/config/siteConfig.ts, which the LLM generates.
+// Only edit for this site: a "My account" button for signed-in users (next to Logout, desktop + mobile).
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, X, ShoppingCart, LayoutDashboard } from 'lucide-react';
+import { Menu, X, ShoppingCart, LayoutDashboard, UserRound } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/cart';
@@ -127,13 +128,24 @@ export default function SiteHeader({
           {adminButton(false)}
           {showAuth && (
             isAuthenticated ? (
-              <Button
-                variant="ghost"
-                onClick={handleLogout}
-                className={`${textClass} ${hoverClass} transition-colors duration-200`}
-              >
-                Logout
-              </Button>
+              <>
+                <Link to="/account" data-testid="my-account-link">
+                  <Button
+                    variant="ghost"
+                    className={`gap-2 ${textClass} ${hoverClass} transition-colors duration-200`}
+                  >
+                    <UserRound size={16} aria-hidden="true" />
+                    My account
+                  </Button>
+                </Link>
+                <Button
+                  variant="ghost"
+                  onClick={handleLogout}
+                  className={`${textClass} ${hoverClass} transition-colors duration-200`}
+                >
+                  Logout
+                </Button>
+              </>
             ) : (
               <>
                 <Link to="/login">
@@ -213,9 +225,17 @@ export default function SiteHeader({
             )}
             {showAuth && (
               isAuthenticated ? (
-                <Button variant="ghost" onClick={handleLogout} className={`${textClass} ${hoverClass}`}>
-                  Logout
-                </Button>
+                <>
+                  <Link to="/account" onClick={close}>
+                    <Button variant="ghost" className={`gap-2 ${textClass} ${hoverClass}`}>
+                      <UserRound size={16} aria-hidden="true" />
+                      My account
+                    </Button>
+                  </Link>
+                  <Button variant="ghost" onClick={handleLogout} className={`${textClass} ${hoverClass}`}>
+                    Logout
+                  </Button>
+                </>
               ) : (
                 <>
                   <Link to="/login" onClick={close}>

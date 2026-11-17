@@ -17,8 +17,6 @@ import ProductsPage from '@/pages/ProductsPage'
 import ProductDetailPage from '@/pages/ProductDetailPage'
 import EventsPage from '@/pages/EventsPage'
 import EventDetailPage from '@/pages/EventDetailPage'
-import OrdersPage from '@/pages/OrdersPage'
-import OrderDetailPage from '@/pages/OrderDetailPage'
 import BranchesPage from '@/pages/BranchesPage'
 import SupportPage from '@/pages/SupportPage'
 import AccountPage from '@/pages/AccountPage'
@@ -52,13 +50,29 @@ import RequireAuth from '@/components/RequireAuth'
 import RequireAdmin from '@/components/RequireAdmin'
 import RequireBoardAccess from '@/components/RequireBoardAccess'
 import AdminLayout from '@/components/AdminLayout'
+// Le Plaisir pages
+import MenuPage from '@/pages/MenuPage'
+import DishPage from '@/pages/DishPage'
+import PatisseriePage from '@/pages/PatisseriePage'
+import BookPage from '@/pages/BookPage'
+import TeamLunchPage from '@/pages/TeamLunchPage'
+import { PickupConfirmedPage, BookConfirmedPage, TeamLunchConfirmedPage } from '@/pages/ConfirmedPages'
+import MyOrdersPage from '@/pages/MyOrdersPage'
+import OrderTrackPage from '@/pages/OrderTrackPage'
+import StoryPage from '@/pages/StoryPage'
+import VisitPage from '@/pages/VisitPage'
+import IdeasPage from '@/pages/IdeasPage'
+import AccountHubPage from '@/pages/AccountHubPage'
+import AreaPage from '@/pages/AreaPage'
+import {
+  AdminPlaisirHub, AdminPlaisirMenu, AdminPlaisirVitrine, AdminPlaisirPickupSettings, AdminPlaisirBookings,
+  AdminPlaisirCapacity, AdminPlaisirGatherings, AdminPlaisirFlavours, AdminPlaisirSuggestions,
+} from '@/pages/admin/AdminPlaisirPages'
 
 const queryClient = new QueryClient()
 
-// Public and admin routes are injected here by the pipeline.
-// Public pages are wrapped in SiteLayout (Header + Footer from foundation).
+// Public and admin routes. Public pages are wrapped in SiteLayout (Header + Footer from foundation).
 // Admin pages use their own AdminLayout — do not wrap them in SiteLayout.
-// /login and /signup are foundation auth routes (always present).
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -66,12 +80,9 @@ export default function App() {
       <AuthProvider>
         <BranchProvider>
         <CartProvider>
-          {/* Global toasts — mounted once at the app root. Failed API calls auto-toast via the
-              apiClient response interceptor; wrap mutations in withToast() for success feedback. */}
           <Toaster richColors position="bottom-left" />
           <BrowserRouter>
             <Routes>
-              {/* Public routes rendered inside SiteLayout shell */}
               <Route
                 element={
                   <SiteLayout config={siteConfig}>
@@ -93,24 +104,34 @@ export default function App() {
                 <Route path="/gallery" element={<GalleryPage />} />
                 <Route path="/loyalty-terms" element={<LoyaltyTermsPage />} />
                 <Route path="/support" element={<RequireAuth><SupportPage /></RequireAuth>} />
-                <Route path="/orders" element={<RequireAuth><OrdersPage /></RequireAuth>} />
-                <Route path="/orders/:id" element={<RequireAuth><OrderDetailPage /></RequireAuth>} />
                 <Route path="/account" element={<RequireAuth><AccountPage /></RequireAuth>} />
                 <Route path="/checkout" element={<RequireAuth><CheckoutPage /></RequireAuth>} />
+                {/* Le Plaisir */}
+                <Route path="/menu" element={<MenuPage />} />
+                <Route path="/menu/:slug" element={<DishPage />} />
+                <Route path="/order" element={<MenuPage pickup />} />
+                <Route path="/patisserie" element={<PatisseriePage />} />
+                <Route path="/book" element={<BookPage />} />
+                <Route path="/book/confirmed/:orderId" element={<RequireAuth><BookConfirmedPage /></RequireAuth>} />
+                <Route path="/team-lunch" element={<TeamLunchPage />} />
+                <Route path="/team-lunch/confirmed/:orderId" element={<RequireAuth><TeamLunchConfirmedPage /></RequireAuth>} />
+                <Route path="/order/confirmed/:orderId" element={<RequireAuth><PickupConfirmedPage /></RequireAuth>} />
+                <Route path="/orders" element={<RequireAuth><MyOrdersPage /></RequireAuth>} />
+                <Route path="/orders/:id" element={<RequireAuth><OrderTrackPage /></RequireAuth>} />
+                <Route path="/story" element={<StoryPage />} />
+                <Route path="/visit" element={<VisitPage />} />
+                <Route path="/ideas" element={<IdeasPage />} />
+                <Route path="/me" element={<RequireAuth><AccountHubPage /></RequireAuth>} />
+                <Route path="/near/:area" element={<AreaPage />} />
                 <Route path="*" element={<HomePage />} />
               </Route>
 
-              {/* Admin area — own AdminLayout, NOT wrapped in SiteLayout. The shell admits STAFF
-                  (RequireBoardAccess) so they can reach the order board; every other page is
-                  independently RequireAdmin-gated (STAFF is bounced to /admin/orders). */}
               <Route
                 path="/admin"
                 element={<RequireBoardAccess><AdminLayout /></RequireBoardAccess>}
               >
                 <Route index element={<Navigate to="orders" replace />} />
-                {/* The order board replaces the old /admin/orders grid; STAFF + ADMIN. */}
                 <Route path="orders" element={<OrderBoardPage />} />
-                {/* Flat cross-sprint order archive (ADMIN-only record view). */}
                 <Route path="order-archive" element={<RequireAdmin><AdminOrdersArchivePage /></RequireAdmin>} />
                 <Route path="media" element={<RequireAdmin><AdminMediaPage /></RequireAdmin>} />
                 <Route path="support" element={<RequireAdmin><AdminSupportPage /></RequireAdmin>} />
@@ -123,7 +144,15 @@ export default function App() {
                 <Route path="branches" element={<RequireAdmin><AdminBranchesPage /></RequireAdmin>} />
                 <Route path="reviews" element={<RequireAdmin><AdminReviewsPage /></RequireAdmin>} />
                 <Route path="feedback" element={<RequireAdmin><AdminFeedbackPage /></RequireAdmin>} />
-                {/* Discount & Loyalty section — tabbed sub-pages under one admin nav entry. */}
+                <Route path="plaisir" element={<RequireAdmin><AdminPlaisirHub /></RequireAdmin>} />
+                <Route path="plaisir/menu" element={<RequireAdmin><AdminPlaisirMenu /></RequireAdmin>} />
+                <Route path="plaisir/vitrine" element={<RequireAdmin><AdminPlaisirVitrine /></RequireAdmin>} />
+                <Route path="plaisir/pickup-settings" element={<RequireAdmin><AdminPlaisirPickupSettings /></RequireAdmin>} />
+                <Route path="plaisir/bookings" element={<RequireAdmin><AdminPlaisirBookings /></RequireAdmin>} />
+                <Route path="plaisir/table-capacity" element={<RequireAdmin><AdminPlaisirCapacity /></RequireAdmin>} />
+                <Route path="plaisir/gatherings" element={<RequireAdmin><AdminPlaisirGatherings /></RequireAdmin>} />
+                <Route path="plaisir/flavours" element={<RequireAdmin><AdminPlaisirFlavours /></RequireAdmin>} />
+                <Route path="plaisir/suggestions" element={<RequireAdmin><AdminPlaisirSuggestions /></RequireAdmin>} />
                 <Route path="loyalty" element={<RequireAdmin><LoyaltyAdminLayout /></RequireAdmin>}>
                   <Route index element={<LoyaltyOverviewPage />} />
                   <Route path="customers" element={<LoyaltyCustomersPage />} />
