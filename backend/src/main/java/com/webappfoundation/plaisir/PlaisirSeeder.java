@@ -2,7 +2,6 @@ package com.webappfoundation.plaisir;
 
 import com.webappfoundation.model.Product;
 import com.webappfoundation.plaisir.PlaisirModel.*;
-import com.webappfoundation.plaisir.PlaisirRepos.*;
 import com.webappfoundation.repository.ProductRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

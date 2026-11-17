@@ -7,7 +7,6 @@ import com.webappfoundation.exception.ResourceNotFoundException;
 import com.webappfoundation.model.LoyaltyEventType;
 import com.webappfoundation.model.User;
 import com.webappfoundation.plaisir.PlaisirModel.*;
-import com.webappfoundation.plaisir.PlaisirRepos.*;
 import com.webappfoundation.repository.UserRepository;
 import com.webappfoundation.service.*;
 import org.springframework.stereotype.Service;
